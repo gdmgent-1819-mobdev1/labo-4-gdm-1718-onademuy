@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Tinder</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <div class="dropzoneLeft"></div>
+    <div class="head" style="display: block;"> <img class="t1" src="images/tinder.png" alt="Logo tinder">
+    <div class="content">
+      <div> <img draggable="true" id="p_picture" alt="picture"></div>
+      <div class="data">
+        <h3>Name: <span id="p_name"></span></h3>
+        <h3>Age: <span id="p_age"></span></h3>
+      </div>    
+    </div>
+     <button id="btn_cross">X</button>
+     <button id="btn_heart">V</button>
+     <button id="showLikes">Show my likes and dislikes</button>
+     <p class="change" id="dislikes"></p>
+     <p class="change" id="likes"></p>
+     <div id="map">
+      <div id="map-canvas"></div>
+    </div>
+     </div>
+     <div class="dropzoneRight"></div>
+
+  </div>
+
+  <script src="script/script.js"></script>
+</body>
+</html>
+
