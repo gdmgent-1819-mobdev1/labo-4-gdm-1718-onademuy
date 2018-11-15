@@ -4,8 +4,16 @@ let name = document.getElementById("p_name");
 let age = document.getElementById("p_age");
 let locations = document.getElementById("p_location");
 let userFetch = [];
+let crosses = [];
+let hearts = [];
 
-
+if(localStorage.getItem("crosses") !== null){
+    crosses = JSON.parse(localStorage.getItem("crosses"));
+}
+if(localStorage.getItem("hearts") !== null){
+    hearts = JSON.parse(localStorage.getItem("hearts"));
+}
+if(localStorage.getItem("userFetch")=== null){
 fetch(url)
     .then(function (response) {
         return response.json();
@@ -29,6 +37,51 @@ fetch(url)
     .catch(function (error) {
         console.log(error);
     })
+}
+function cross() {
+    if (userFetch.length <= 1) {
+        crosses.push(userFetch[0]);
+        userFetch.shift();
+        localStorage.removeItem("user");
+        location.reload();
+    } 
+    else {
+        crosses = JSON.parse(localStorage.getItem("crosses"));
+        crosses.push(userFetch[0]);
+        userFetch.shift();
+        localStorage.setItem("user", JSON.stringify(userFetch));
+        localStorage.setItem("crosses", JSON.stringify(crosses));
+        displayFirstPerson();
+    }
+}
+
+function heart() {
+    if (userFetch.length <= 1) {
+        hearts.push(userFetch[0]);
+        userFetch.shift();
+        localStorage.removeItem("user");
+        location.reload();
+    } 
+    else {
+        hearts = JSON.parse(localStorage.getItem("hearts"));
+        hearts.push(userFetch[0]);
+        userFetch.shift();
+        localStorage.setItem("user", JSON.stringify(userFetch));
+        localStorage.setItem("hearts", JSON.stringify(hearts));
+        displayFirstPerson();
+    }
+}
+
+function swipe(){
+    localStorage.setItem("user", JSON.stringify(userFetch));
+    document.getElementById("btn_cross").addEventListener("click", crossed)
+    document.getElementById("btn_heart").addEventListener("click", hearted)
+}
+
+document.getElementById("showLikes").addEventListener('click', function() {
+    document.getElementById("myCrosses").innerHTML = "";
+    document.getElementById("myHearts").innerHTML = "";
+})
 
 function displayFirstPerson() {
     picture.src = userFetch[0].picture;
@@ -36,25 +89,6 @@ function displayFirstPerson() {
     name.innerHTML += " " + userFetch[0].firstname;
     age.innerHTML = userFetch[0].age;
     locations.innerHTML = userFetch[0].place;
-
-    function showPos(position){
-        let lat1 = userFetch[0].lat;
-        let lon1 = userFetch[0].long;
-        let lat2 = position.coords.latitude;
-        let lon2 = position.coords.longitude;
-        let p = 0.017453292519943295; 
-        let c = Math.cos;
-        let a = 0.5 - c((lat2 - lat1) * p) / 2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-        let x = Math.round(12742 * Math.asin(Math.sqrt(a)));
-        console.log(x);
-        document.getElementById("p_distance").innerHTML = x + " km";
-    }
-    map.flyTo({
-        center: [
-            userFetch[0],long, userFetch[0].lat 
-        ]
-    })
-    let radius = 35;
 }
 
 
@@ -88,9 +122,7 @@ let map = new mapboxgl.Map({
 });
 }
 
-
-
-//geolocation of tinder person
+/* geolocation of tinder person
 fetch(url)
     .then(function (response) {
         return response.json();
@@ -102,12 +134,13 @@ fetch(url)
             tinderLong = user.location.coordinates.longitude;
         }
     })
+*/
 
 
 function getDistanceFromLatLonInKm(tinderLat, tinderLong, meLat, meLong)
 {
-    let R = 6371; // Radius of the earth in km
-    let dLat = deg2rad(meLat-tinderLat);  // deg2rad below
+    let R = 6371; 
+    let dLat = deg2rad(meLat-tinderLat);  
     let dLon = deg2rad(meLong-tinderLong); 
     let a = 
     Math.sin(dLat/2) * Math.sin(dLat/2) +
