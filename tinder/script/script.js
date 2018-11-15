@@ -36,6 +36,25 @@ function displayFirstPerson() {
     name.innerHTML += " " + userFetch[0].firstname;
     age.innerHTML = userFetch[0].age;
     locations.innerHTML = userFetch[0].place;
+
+    function showPos(position){
+        let lat1 = userFetch[0].lat;
+        let lon1 = userFetch[0].long;
+        let lat2 = position.coords.latitude;
+        let lon2 = position.coords.longitude;
+        let p = 0.017453292519943295; 
+        let c = Math.cos;
+        let a = 0.5 - c((lat2 - lat1) * p) / 2 + c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+        let x = Math.round(12742 * Math.asin(Math.sqrt(a)));
+        console.log(x);
+        document.getElementById("p_distance").innerHTML = x + " km";
+    }
+    map.flyTo({
+        center: [
+            userFetch[0],long, userFetch[0].lat 
+        ]
+    })
+    let radius = 35;
 }
 
 //likes en dislikes opslaan in local storage, kunnen tonen en veranderen van tabel
@@ -46,24 +65,31 @@ function displayFirstPerson() {
 let y= document.getElementById("demo");
 let f= document.getElementById("p_distance");
 
+mapboxgl.accessToken= 'pk.eyJ1Ijoib25hZGVtdXl0ZXJlIiwiYSI6ImNqb2h0aWdiejAxc2Uza3FxZjZiY2t0dzMifQ.Yo3WwLGoG3jhGy1aBadahA';
+
 function getLocation(){
 if(navigator.geolocation){
     navigator.geolocation.getCurrentPosition(function(position){
     meLat = position.coords.latitude;
     meLong = position.coords.longitude;
+    console.log ("Latitude: " + meLat + ", Longitude: " + meLong);
     });
 }
 else {
     y.innerHTML = "Geolocation is not supported by this browser.";
-}}
+}};
 
+
+function map(location){
 let map = new mapboxgl.Map({
     container: 'map',
-    center:[-122.420679, 37.772537],
     zoom: 10,
-    style: 'mapbox://styles/mapbox/basic-v8',
-    hash: true;
-})
+    style: 'mapbox://styles/mapbox/streets-v10',
+    center: [0,0]
+});
+}
+
+
 
 //geolocation of tinder person
 fetch(url)
@@ -101,83 +127,7 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-//mapbox
-let mapLatLong = new google.maps.LatLng(tinderLat, tinderLong);
-    
-let mapOptions = 
-{
-  zoom: 15,
-  mapTypeControl: false,
-  center: mapLatLng,
-};
 
-let map = new google.maps.Map(document.getElementById('map'), mapOptions);
-
-
-
-
-        /*
-        let posMe = navigator.geolocation.getCurrentPosition(getPositionMe);
-        for(i=0; i<10; i++)
-        {
-            let x = data.results[i];
-            let posTinder = x.navigator.geolocation.getCurrentPosition(getPositionTinder);
-        {
-            getPos(position.coords.latitude, position.coords.longitude);
-            console.log(posMe);
-        })
-    
-        //function getPositionMe
-        //function getPositionTinder
-    
-        //use geolocation 
-        //tinder person
-       
-                getPos(position.coords.latitude, position.coords.longitude);
-                console.log(posTinder);
-            })
-        };  
-        //show location on map    
-        let map;
-        map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    
-        //distance in km between you and the person
-    function distanceMe (){
-        let meLat = posMe.coords.latitude;
-        let meLong = posMe.coords.longitude;
-        console.log(meLat + " " + meLong);
-    
-    };
-    
-    function distanceTinder (){
-        for(i=0; i<10; i++){
-            let x = data.results[i];
-            let tndrLat = x.posTinder.coords.latitude;
-            let tndrLong = x.posTinder.coords.longitude;
-            console.log(tndrLat + " " + tndrLong);
-            }
-        }
-    };
-    
-    function distance2 (){
-        //distance from tinderperson to me in km
-        let lat = tndrLat - meLat;
-        let long = tndrLong - meLong;
-    };
-    
-    //mapbox by google maps
-    let mapLatLong = new google.maps.LatLng(tndrLat, tndrLong);
-    
-    let mapOptions = 
-    {
-      zoom: 15,
-      mapTypeControl: false,
-      center: mapLatLng,
-    };
-    
-    let map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-    
-    //marker for position
     let mapMarker = new google.maps.Marker({
         position: mapLatLng,
         map: map,
@@ -196,14 +146,14 @@ let map = new google.maps.Map(document.getElementById('map'), mapOptions);
         console.log("Geolocation is not supported");
     }
     };
-*/
+
 //drag and drop functions
 (function() 
 {
-    document.addEventListener('dragStart', dragstart, false);
-    document.addEventListener('drop', dragdrop, false);
-    document.addEventListener('dragEnd', dragend, false);
-    document.addEventListener('dragOver', dragover, false);
+    document.addEventListener('dragStart', dragStart, false);
+    document.addEventListener('drop', drop, false);
+    document.addEventListener('dragEnd', dragEnd, false);
+    document.addEventListener('dragOver', dragOver, false);
 
 }) ();
 
@@ -215,14 +165,14 @@ function dragStart(e) {
 }
 
 //where should the data be dropped?
-function dragDrop(e) {
+function drop(e) {
     e.preventDefault();
     let data = e.dataTransfer.getData("text");
     e.target.appendChild(document.getElementById(data));
 }
 
 function dragEnd(e) {
-  e.target.style.opacity = "";
+  e.preventDefaul();
 }
 
 function dragOver(e) {
