@@ -57,7 +57,6 @@ function displayFirstPerson() {
     let radius = 35;
 }
 
-//likes en dislikes opslaan in local storage, kunnen tonen en veranderen van tabel
 
 
 //GEOLOCATION for long and latitudes
@@ -104,8 +103,6 @@ fetch(url)
         }
     })
 
-    
-
 
 function getDistanceFromLatLonInKm(tinderLat, tinderLong, meLat, meLong)
 {
@@ -127,25 +124,6 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
-
-    let mapMarker = new google.maps.Marker({
-        position: mapLatLng,
-        map: map,
-    properties: {
-            icon: {
-              iconsrc: images/redCircle.gif,
-              iconSize: [120, 120]
-            }
-          }
-      
-    });
-    }
-    
-    else
-    {
-        console.log("Geolocation is not supported");
-    }
-    };
 
 //drag and drop functions
 (function() 
